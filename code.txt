@@ -1,0 +1,985 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Secure Symmetric Messaging</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #1e3a8a);
+            padding: 30px;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.85;
+        }
+
+        .main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        }
+
+        .card h2 {
+            color: #1e3a8a;
+            margin-bottom: 20px;
+        }
+
+        .step {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin: 15px 0 7px;
+        }
+
+        textarea,
+        input {
+            width: 100%;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        textarea {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+        textarea:focus,
+        input:focus {
+            border-color: #2563eb;
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 12px 18px;
+            margin-top: 15px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .generate-btn {
+            background: #7c3aed;
+            color: white;
+            width: 100%;
+        }
+
+        .encrypt-btn {
+            background: #2563eb;
+            color: white;
+            width: 100%;
+        }
+
+        .decrypt-btn {
+            background: #16a34a;
+            color: white;
+            width: 100%;
+        }
+
+        .copy-btn {
+            background: #475569;
+            color: white;
+            width: 100%;
+        }
+
+        .key-box {
+            display: flex;
+            gap: 8px;
+        }
+
+        .key-box input {
+            flex: 1;
+        }
+
+        .key-box button {
+            margin-top: 0;
+            white-space: nowrap;
+        }
+
+        .output {
+            margin-top: 10px;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 12px;
+            min-height: 70px;
+            word-break: break-all;
+            font-size: 14px;
+        }
+
+        .info {
+            margin-top: 25px;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .info h2 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .box {
+            padding: 15px 20px;
+            border-radius: 10px;
+            background: #dbeafe;
+            color: #1e3a8a;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .arrow {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            background: #dbeafe;
+            color: #1e40af;
+            font-weight: bold;
+        }
+
+        .warning {
+            margin-top: 15px;
+            padding: 12px;
+            background: #fff7ed;
+            color: #9a3412;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 750px) {
+            .main {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .key-box {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <h1>🔐 Secure Messaging</h1>
+
+        <p>
+            Automatic Symmetric Key Encryption
+        </p>
+
+    </div>
+
+
+    <!-- MAIN -->
+
+    <div class="main">
+
+
+        <!-- SENDER -->
+
+        <div class="card">
+
+            <span class="step">
+                STEP 1
+            </span>
+
+            <h2>
+                📤 Sender
+            </h2>
+
+
+            <!-- AUTOMATIC KEY -->
+
+            <label>
+                Automatically Generated Secret Key
+            </label>
+
+            <div class="key-box">
+
+                <input
+                    type="text"
+                    id="senderKey"
+                    readonly
+                    placeholder="Click Generate Key">
+
+                <button
+                    class="generate-btn"
+                    onclick="generateKey()">
+
+                    🔑 Generate Key
+
+                </button>
+
+            </div>
+
+
+            <button
+                class="copy-btn"
+                onclick="copyKey()">
+
+                📋 Copy Secret Key
+
+            </button>
+
+
+            <!-- MESSAGE -->
+
+            <label>
+                Enter Message
+            </label>
+
+            <textarea
+                id="senderMessage"
+                placeholder="Type your secret message here...">
+            </textarea>
+
+
+            <!-- ENCRYPT -->
+
+            <button
+                class="encrypt-btn"
+                onclick="encryptMessage()">
+
+                🔒 Encrypt Message
+
+            </button>
+
+
+            <!-- ENCRYPTED MESSAGE -->
+
+            <label>
+                Encrypted Message
+            </label>
+
+            <div
+                id="encryptedOutput"
+                class="output">
+
+                Encrypted message will appear here.
+
+            </div>
+
+
+            <button
+                class="copy-btn"
+                onclick="copyEncryptedMessage()">
+
+                📋 Copy Encrypted Message
+
+            </button>
+
+        </div>
+
+
+
+        <!-- RECIPIENT -->
+
+        <div class="card">
+
+            <span class="step">
+                STEP 2
+            </span>
+
+            <h2>
+                📥 Recipient
+            </h2>
+
+
+            <label>
+                Secret Key
+            </label>
+
+            <input
+                type="text"
+                id="recipientKey"
+                placeholder="Paste the sender's secret key">
+
+
+            <label>
+                Encrypted Message
+            </label>
+
+            <textarea
+                id="recipientMessage"
+                placeholder="Paste encrypted message here...">
+            </textarea>
+
+
+            <button
+                class="decrypt-btn"
+                onclick="decryptMessage()">
+
+                🔓 Decrypt Message
+
+            </button>
+
+
+            <label>
+                Decrypted Message
+            </label>
+
+            <div
+                id="decryptedOutput"
+                class="output">
+
+                Decrypted message will appear here.
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- INFORMATION -->
+
+    <div class="info">
+
+        <h2>
+            🔑 Symmetric Encryption Process
+        </h2>
+
+        <p>
+            A random secret key is automatically generated.
+            The same key is used by both sender and recipient.
+        </p>
+
+
+        <div class="flow">
+
+            <div class="box">
+                Generate Key
+            </div>
+
+            <div class="arrow">
+                →
+            </div>
+
+            <div class="box">
+                Enter Message
+            </div>
+
+            <div class="arrow">
+                →
+            </div>
+
+            <div class="box">
+                Encrypt
+            </div>
+
+            <div class="arrow">
+                →
+            </div>
+
+            <div class="box">
+                Encrypted Message
+            </div>
+
+        </div>
+
+
+        <div class="flow">
+
+            <div class="box">
+                Encrypted Message
+            </div>
+
+            <div class="arrow">
+                +
+            </div>
+
+            <div class="box">
+                Same Secret Key
+            </div>
+
+            <div class="arrow">
+                →
+            </div>
+
+            <div class="box">
+                Decrypt
+            </div>
+
+            <div class="arrow">
+                →
+            </div>
+
+            <div class="box">
+                Original Message
+            </div>
+
+        </div>
+
+
+        <div
+            class="status"
+            id="status">
+
+            Ready. Generate a secret key to begin.
+
+        </div>
+
+
+        <div class="warning">
+
+            ⚠️ This is an educational demonstration of
+            symmetric-key encryption using XOR. XOR with a
+            repeating key is not suitable for real-world
+            secure messaging. A production application should
+            use a well-reviewed authenticated encryption
+            construction.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+
+/* =====================================================
+   AUTOMATIC SYMMETRIC KEY GENERATION
+   ===================================================== */
+
+function generateKey() {
+
+    const characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+        "abcdefghijklmnopqrstuvwxyz" +
+        "0123456789" +
+        "!@#$%^&*";
+
+
+    const keyLength = 32;
+
+    const randomValues =
+        new Uint32Array(keyLength);
+
+
+    crypto.getRandomValues(
+        randomValues
+    );
+
+
+    let key = "";
+
+
+    for (
+        let i = 0;
+        i < keyLength;
+        i++
+    ) {
+
+        key +=
+            characters[
+                randomValues[i] %
+                characters.length
+            ];
+
+    }
+
+
+    document.getElementById(
+        "senderKey"
+    ).value = key;
+
+
+    document.getElementById(
+        "status"
+    ).textContent =
+        "✅ New symmetric key generated successfully.";
+
+}
+
+
+
+/* =====================================================
+   TEXT → BYTES
+   ===================================================== */
+
+function textToBytes(text) {
+
+    return new TextEncoder().encode(text);
+
+}
+
+
+
+/* =====================================================
+   BYTES → TEXT
+   ===================================================== */
+
+function bytesToText(bytes) {
+
+    return new TextDecoder().decode(bytes);
+
+}
+
+
+
+/* =====================================================
+   BYTES → BASE64
+   ===================================================== */
+
+function bytesToBase64(bytes) {
+
+    let binary = "";
+
+
+    for (
+        let i = 0;
+        i < bytes.length;
+        i++
+    ) {
+
+        binary +=
+            String.fromCharCode(
+                bytes[i]
+            );
+
+    }
+
+
+    return btoa(binary);
+
+}
+
+
+
+/* =====================================================
+   BASE64 → BYTES
+   ===================================================== */
+
+function base64ToBytes(base64) {
+
+    const binary =
+        atob(base64);
+
+
+    const bytes =
+        new Uint8Array(
+            binary.length
+        );
+
+
+    for (
+        let i = 0;
+        i < binary.length;
+        i++
+    ) {
+
+        bytes[i] =
+            binary.charCodeAt(i);
+
+    }
+
+
+    return bytes;
+
+}
+
+
+
+/* =====================================================
+   ENCRYPT MESSAGE
+   ===================================================== */
+
+function encryptMessage() {
+
+    const message =
+        document.getElementById(
+            "senderMessage"
+        ).value;
+
+
+    const key =
+        document.getElementById(
+            "senderKey"
+        ).value;
+
+
+    if (!key) {
+
+        alert(
+            "Please generate a secret key first."
+        );
+
+        return;
+
+    }
+
+
+    if (!message.trim()) {
+
+        alert(
+            "Please enter a message."
+        );
+
+        return;
+
+    }
+
+
+    const messageBytes =
+        textToBytes(message);
+
+
+    const keyBytes =
+        textToBytes(key);
+
+
+    const encrypted =
+        new Uint8Array(
+            messageBytes.length
+        );
+
+
+    /*
+       Symmetric encryption:
+
+       Message BYTE
+             XOR
+       Secret Key BYTE
+             =
+       Encrypted BYTE
+    */
+
+    for (
+        let i = 0;
+        i < messageBytes.length;
+        i++
+    ) {
+
+        encrypted[i] =
+            messageBytes[i] ^
+            keyBytes[
+                i % keyBytes.length
+            ];
+
+    }
+
+
+    const encryptedMessage =
+        bytesToBase64(
+            encrypted
+        );
+
+
+    document.getElementById(
+        "encryptedOutput"
+    ).textContent =
+        encryptedMessage;
+
+
+    /*
+       Automatically place the
+       encrypted message into
+       recipient section.
+    */
+
+    document.getElementById(
+        "recipientMessage"
+    ).value =
+        encryptedMessage;
+
+
+    /*
+       Automatically place the
+       generated key into recipient
+       section for demonstration.
+    */
+
+    document.getElementById(
+        "recipientKey"
+    ).value =
+        key;
+
+
+    document.getElementById(
+        "status"
+    ).textContent =
+        "✅ Message encrypted successfully.";
+
+}
+
+
+
+/* =====================================================
+   DECRYPT MESSAGE
+   ===================================================== */
+
+function decryptMessage() {
+
+    const encryptedMessage =
+        document.getElementById(
+            "recipientMessage"
+        ).value.trim();
+
+
+    const key =
+        document.getElementById(
+            "recipientKey"
+        ).value;
+
+
+    if (!encryptedMessage) {
+
+        alert(
+            "Please enter the encrypted message."
+        );
+
+        return;
+
+    }
+
+
+    if (!key) {
+
+        alert(
+            "Please enter the secret key."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const encryptedBytes =
+            base64ToBytes(
+                encryptedMessage
+            );
+
+
+        const keyBytes =
+            textToBytes(key);
+
+
+        const decrypted =
+            new Uint8Array(
+                encryptedBytes.length
+            );
+
+
+        /*
+           XOR AGAIN with the
+           SAME symmetric key.
+
+           Encrypted
+              XOR
+           Same Key
+              =
+           Original Message
+        */
+
+        for (
+            let i = 0;
+            i < encryptedBytes.length;
+            i++
+        ) {
+
+            decrypted[i] =
+                encryptedBytes[i] ^
+                keyBytes[
+                    i % keyBytes.length
+                ];
+
+        }
+
+
+        const message =
+            bytesToText(
+                decrypted
+            );
+
+
+        document.getElementById(
+            "decryptedOutput"
+        ).textContent =
+            message;
+
+
+        document.getElementById(
+            "status"
+        ).textContent =
+            "✅ Message decrypted successfully.";
+
+    }
+
+    catch (error) {
+
+        document.getElementById(
+            "decryptedOutput"
+        ).textContent =
+            "❌ Decryption failed.";
+
+        document.getElementById(
+            "status"
+        ).textContent =
+            "❌ Invalid encrypted message or key.";
+
+    }
+
+}
+
+
+
+/* =====================================================
+   COPY SECRET KEY
+   ===================================================== */
+
+function copyKey() {
+
+    const key =
+        document.getElementById(
+            "senderKey"
+        ).value;
+
+
+    if (!key) {
+
+        alert(
+            "Generate a key first."
+        );
+
+        return;
+
+    }
+
+
+    navigator.clipboard.writeText(
+        key
+    );
+
+
+    document.getElementById(
+        "status"
+    ).textContent =
+        "📋 Secret key copied.";
+
+}
+
+
+
+/* =====================================================
+   COPY ENCRYPTED MESSAGE
+   ===================================================== */
+
+function copyEncryptedMessage() {
+
+    const message =
+        document.getElementById(
+            "encryptedOutput"
+        ).textContent;
+
+
+    if (
+        !message ||
+        message ===
+        "Encrypted message will appear here."
+    ) {
+
+        alert(
+            "Encrypt a message first."
+        );
+
+        return;
+
+    }
+
+
+    navigator.clipboard.writeText(
+        message
+    );
+
+
+    document.getElementById(
+        "status"
+    ).textContent =
+        "📋 Encrypted message copied.";
+
+}
+
+</script>
+
+</body>
+</html>
